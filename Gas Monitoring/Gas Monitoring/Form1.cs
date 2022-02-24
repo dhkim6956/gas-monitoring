@@ -20,7 +20,7 @@ namespace Gas_Monitoring
 
         double x = 0;
 
-        private string str_data = "0.0";
+        private string pre_DAY, read_DAY, str_data = "0.0";
         private double d_data = 0;
 
         private SerialPort serialPort1 = new SerialPort();
@@ -120,6 +120,7 @@ namespace Gas_Monitoring
             string Temp = Encoding.Default.GetString(Q);
             string[] Split1 = Temp.Split('=');
             string[] Split2 = Split1[1].Split('\r');
+            
 
             d_data = Math.Round(double.Parse(Split2[0]) * 9700 / 1024 + 300, 3);
             str_data = d_data.ToString("F1");
@@ -128,28 +129,55 @@ namespace Gas_Monitoring
             System.IO.File.AppendAllText(file, str_data+"\r\n", Encoding.Default);
         }
 
-        private void load_TXT()
-        {
 
-        }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            double num = (d_data);
-            string numString = num.ToString();
-            textBox1.Text = numString;
+            string read_str_data = "";
+            double read_d_data = 0;
 
-            chart1.Series[0].Points.AddXY(x, num);
+            try
+            {
+                read_DAY = System.DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss");
 
-            if (chart1.Series[0].Points.Count > 100)
-                chart1.Series[0].Points.RemoveAt(0);
+                if (pre_DAY == read_DAY) return;
+                read_str_data = System.IO.File.ReadAllText(MyDocuments + "/TEMP/" + read_DAY + ".csv");
 
-            chart1.ChartAreas[0].AxisX.Minimum = Math.Round(chart1.Series[0].Points[0].XValue, 3);
-            chart1.ChartAreas[0].AxisX.Maximum = Math.Round(x, 3);
+                pre_DAY = read_DAY;
 
-            chart1.ChartAreas[0].AxisY.Minimum = 300;
+            }
+            catch { }
 
-            x += 1.0;
+            try
+            {
+                read_d_data = double.Parse(read_str_data);
+            }
+            catch
+            {
+                read_d_data = 0;
+            }
+
+
+            if(read_d_data != 0)
+            {
+                double num = (read_d_data);
+                string numString = num.ToString();
+                textBox1.Text = numString;
+
+                chart1.Series[0].Points.AddXY(x, num);
+
+                if (chart1.Series[0].Points.Count > 100)
+                    chart1.Series[0].Points.RemoveAt(0);
+
+                chart1.ChartAreas[0].AxisX.Minimum = Math.Round(chart1.Series[0].Points[0].XValue, 3);
+                chart1.ChartAreas[0].AxisX.Maximum = Math.Round(x, 3);
+
+                chart1.ChartAreas[0].AxisY.Minimum = 300;
+                chart1.ChartAreas[0].AxisY.Maximum = 10000;
+
+                x += 1.0;
+            }
+
         }
 
         private void StopButton_Click(object sender, EventArgs e)
