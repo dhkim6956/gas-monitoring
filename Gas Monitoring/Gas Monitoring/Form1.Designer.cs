@@ -114,11 +114,11 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(588, 76);
+            this.label2.Location = new System.Drawing.Point(704, 82);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(29, 12);
+            this.label2.Size = new System.Drawing.Size(30, 12);
             this.label2.TabIndex = 6;
-            this.label2.Text = "수치";
+            this.label2.Text = "ppm";
             // 
             // pictureBox1
             // 

@@ -21,7 +21,7 @@ namespace Gas_Monitoring
         double x = 0;
 
         private string str_data = "0.0";
-        private double number = 0;
+        private double d_data = 0;
 
         private SerialPort serialPort1 = new SerialPort();
 
@@ -107,6 +107,7 @@ namespace Gas_Monitoring
                     if ((Q[0] == 'A') && (Q[1] == 'T') && (Q[2] == '+'))
                     {
                         save_TXT(Q);
+                        
                     }
                     index=-1;
                 }
@@ -120,10 +121,10 @@ namespace Gas_Monitoring
             string[] Split1 = Temp.Split('=');
             string[] Split2 = Split1[1].Split('\r');
 
-            str_data = (double.Parse(Split2[0]) / 10).ToString("F1");
-            number = double.Parse(str_data) * 10;
+            d_data = Math.Round(double.Parse(Split2[0]) * 9700 / 1024 + 300, 3);
+            str_data = d_data.ToString("F1");
 
-            string file = MyDocuments + "/TEMP/" + System.DateTime.Now.ToString("yyyyMMdd_HH_mm_ss") + ".csv";
+            string file = MyDocuments + "/TEMP/" + System.DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss") + ".csv";
             System.IO.File.AppendAllText(file, str_data+"\r\n", Encoding.Default);
         }
 
@@ -134,7 +135,7 @@ namespace Gas_Monitoring
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            double num = (number);
+            double num = (d_data);
             string numString = num.ToString();
             textBox1.Text = numString;
 
@@ -145,6 +146,8 @@ namespace Gas_Monitoring
 
             chart1.ChartAreas[0].AxisX.Minimum = Math.Round(chart1.Series[0].Points[0].XValue, 3);
             chart1.ChartAreas[0].AxisX.Maximum = Math.Round(x, 3);
+
+            chart1.ChartAreas[0].AxisY.Minimum = 300;
 
             x += 1.0;
         }
