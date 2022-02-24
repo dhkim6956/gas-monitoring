@@ -1,0 +1,11 @@
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\bin\Debug\Gas Monitoring.exe.config
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\bin\Debug\Gas Monitoring.exe
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\bin\Debug\Gas Monitoring.pdb
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\obj\Debug\Gas Monitoring.csproj.AssemblyReference.cache
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\obj\Debug\Gas Monitoring.csproj.SuggestedBindingRedirects.cache
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\obj\Debug\Gas_Monitoring.Form1.resources
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\obj\Debug\Gas_Monitoring.Properties.Resources.resources
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\obj\Debug\Gas Monitoring.csproj.GenerateResource.cache
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\obj\Debug\Gas Monitoring.csproj.CoreCompileInputs.cache
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\obj\Debug\Gas Monitoring.exe
+C:\Users\dhkim\Desktop\Gas Monitoring\Gas Monitoring\Gas Monitoring\obj\Debug\Gas Monitoring.pdb
