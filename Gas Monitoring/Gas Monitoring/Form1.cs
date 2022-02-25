@@ -20,6 +20,8 @@ namespace Gas_Monitoring
 
         double x = 0;
 
+        bool firsttime = true;
+
         private string pre_DAY, read_DAY, str_data = "0.0";
         private double d_data = 0;
 
@@ -56,15 +58,12 @@ namespace Gas_Monitoring
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
-            textBox1.Text = "0.0";
-
-            
             chart1.Series[0].ChartType = SeriesChartType.Line;
             chart1.Series[0].IsVisibleInLegend = false;
             chart1.ChartAreas[0].AxisX.Title = "sec";
 
-            textBox1.Text = "0";
+            textBox1.Text = "wait for";
+            textBox2.Text = ".csv file";
 
         }
 
@@ -102,15 +101,22 @@ namespace Gas_Monitoring
             {
                 Q[index] = QBUF[i];
 
+                if(Q[index] == '\n' && firsttime == true)
+                {
+                    firsttime = false;
+                    return;
+                }
+
                 if (Q[index] == '\n')
                 {
                     if ((Q[0] == 'A') && (Q[1] == 'T') && (Q[2] == '+'))
                     {
                         save_TXT(Q);
-                        
+
                     }
-                    index=-1;
+                    index = -1;
                 }
+                
                 index++; if (index >= 30) index = 0;
             }
         }
@@ -136,33 +142,33 @@ namespace Gas_Monitoring
             string read_str_data = "";
             double read_d_data = 0;
 
-            try
-            {
-                read_DAY = System.DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss");
+            read_DAY = System.DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss");
 
+            if (System.IO.File.Exists(MyDocuments + "/TEMP/" + read_DAY + ".csv"))
+            {
                 if (pre_DAY == read_DAY) return;
                 read_str_data = System.IO.File.ReadAllText(MyDocuments + "/TEMP/" + read_DAY + ".csv");
 
                 pre_DAY = read_DAY;
 
-            }
-            catch { }
-
-            try
-            {
                 read_d_data = double.Parse(read_str_data);
             }
-            catch
-            {
-                read_d_data = 0;
-            }
+
+
+            
+            
 
 
             if(read_d_data != 0)
             {
                 double num = (read_d_data);
+                double vol = Math.Round((read_d_data / 1000),2);
                 string numString = num.ToString();
+                string volString = vol.ToString();
                 textBox1.Text = numString;
+                textBox2.Text = volString;
+
+                
 
                 chart1.Series[0].Points.AddXY(x, num);
 
@@ -172,8 +178,8 @@ namespace Gas_Monitoring
                 chart1.ChartAreas[0].AxisX.Minimum = Math.Round(chart1.Series[0].Points[0].XValue, 3);
                 chart1.ChartAreas[0].AxisX.Maximum = Math.Round(x, 3);
 
-                chart1.ChartAreas[0].AxisY.Minimum = 300;
-                chart1.ChartAreas[0].AxisY.Maximum = 10000;
+                chart1.ChartAreas[0].AxisY.Minimum = 1000;
+                chart1.ChartAreas[0].AxisY.Maximum = 3000;
 
                 x += 1.0;
             }
