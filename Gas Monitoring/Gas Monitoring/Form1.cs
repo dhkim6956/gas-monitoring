@@ -18,6 +18,7 @@ namespace Gas_Monitoring
         private byte[] Q = new byte[30];
         private int index = 0;
 
+        int guideline = 2000;
         double x = 0;
 
         bool firsttime = true;
@@ -59,11 +60,28 @@ namespace Gas_Monitoring
         private void Form1_Load(object sender, EventArgs e)
         {
             chart1.Series[0].ChartType = SeriesChartType.Line;
+            chart1.Series[1].ChartType = SeriesChartType.Line;
             chart1.Series[0].IsVisibleInLegend = false;
+            chart1.Series[1].IsVisibleInLegend = false;
+            chart1.Series[1].Color = Color.Red;
             chart1.ChartAreas[0].AxisX.Title = "sec";
+
+            chart1.ChartAreas[0].AxisY.Minimum = 1000;
+            chart1.ChartAreas[0].AxisY.Maximum = 3000;
+
+            chart1.ChartAreas[0].AxisX.Minimum = 0;
+            chart1.ChartAreas[0].AxisX.Maximum = 60;
+
+            for (int i = 0; i <= 60; i++)
+            {
+                chart1.Series[1].Points.AddXY(i, guideline);
+            }
 
             textBox1.Text = "wait for";
             textBox2.Text = ".csv file";
+
+
+            label4.Text = System.DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss");
 
         }
 
@@ -101,9 +119,10 @@ namespace Gas_Monitoring
             {
                 Q[index] = QBUF[i];
 
-                if(Q[index] == '\n' && firsttime == true)
+                if (Q[index] == '\n' && firsttime == true)
                 {
                     firsttime = false;
+                    index = 0;
                     return;
                 }
 
@@ -146,44 +165,95 @@ namespace Gas_Monitoring
 
             if (System.IO.File.Exists(MyDocuments + "/TEMP/" + read_DAY + ".csv"))
             {
-                if (pre_DAY == read_DAY) return;
-                read_str_data = System.IO.File.ReadAllText(MyDocuments + "/TEMP/" + read_DAY + ".csv");
 
-                pre_DAY = read_DAY;
 
-                read_d_data = double.Parse(read_str_data);
+                    if (pre_DAY == read_DAY) return;
+                    read_str_data = System.IO.File.ReadAllText(MyDocuments + "/TEMP/" + read_DAY + ".csv");
+
+                string[] s = read_str_data.Split('\r');
+                read_d_data = double.Parse(s[0]);
+
+                    pre_DAY = read_DAY;
+
+                    label4.Text = read_DAY;
+
+
+
+                if (read_d_data != 0)
+                {
+                    double num = (read_d_data);
+                    double vol = Math.Round((read_d_data / 1000), 2);
+                    double lel = Math.Round(num / 1.8 / 100);
+                    string numString = num.ToString();
+                    string volString = vol.ToString();
+                    string lelString = lel.ToString();
+                    textBox1.Text = numString;
+                    textBox2.Text = volString;
+                    textBox4.Text = lelString;
+
+
+
+
+                    chart1.Series[0].Points.AddXY(x, num);
+
+
+
+                    chart1.ChartAreas[0].AxisX.Minimum = Math.Round(chart1.Series[0].Points[0].XValue, 3);
+                    chart1.ChartAreas[0].AxisX.Maximum = 60;
+
+                    chart1.ChartAreas[0].AxisY.Minimum = 1000;
+                    chart1.ChartAreas[0].AxisY.Maximum = 3000;
+
+                    x += 1.0;
+
+                    if (x >= 60)
+                    {
+                        x = 0;
+                        chart1.Series[0].Points.Clear();
+                    }
+
+                }
+
+
             }
 
-
-            
-            
-
-
-            if(read_d_data != 0)
+            if(read_d_data >= guideline)
             {
-                double num = (read_d_data);
-                double vol = Math.Round((read_d_data / 1000),2);
-                string numString = num.ToString();
-                string volString = vol.ToString();
-                textBox1.Text = numString;
-                textBox2.Text = volString;
-
-                
-
-                chart1.Series[0].Points.AddXY(x, num);
-
-                if (chart1.Series[0].Points.Count > 100)
-                    chart1.Series[0].Points.RemoveAt(0);
-
-                chart1.ChartAreas[0].AxisX.Minimum = Math.Round(chart1.Series[0].Points[0].XValue, 3);
-                chart1.ChartAreas[0].AxisX.Maximum = Math.Round(x, 3);
-
-                chart1.ChartAreas[0].AxisY.Minimum = 1000;
-                chart1.ChartAreas[0].AxisY.Maximum = 3000;
-
-                x += 1.0;
+                pictureBox2.Visible = true;
+            } else
+            {
+                pictureBox2.Visible = false;
             }
 
+        }
+
+        private void textBox3_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                int inputstring = int.Parse(textBox3.Text);
+                if( inputstring >= 1000 & inputstring <= 3000)
+                {
+                    guideline = inputstring;
+                    chart1.Series[1].Points.Clear();
+                    for (int i = 0; i <= 60; i++)
+                    {
+                        chart1.Series[1].Points.AddXY(i, inputstring);
+                    }
+                }
+                
+            }
+        }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(char.IsDigit(e.KeyChar) || e.KeyChar == Convert.ToChar(Keys.Back) || e.KeyChar == 46))
+
+            {
+
+                e.Handled = true;
+
+            }
         }
 
         private void StopButton_Click(object sender, EventArgs e)
